@@ -2,6 +2,7 @@ package com.example.demo.quartz;
 
 import com.example.demo.service.MyService;
 import com.example.demo.service.impl.MyServiceImpl;
+import com.example.demo.utils.DateUtil;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * quartz并发问题:
+ *
  * Job是无状态的任务，即指可以并发的任务，相互之间互不干扰
  *      在任务中有对于数据库的操作时，容易产生数据混乱：更新丢失，脏读，不可重复读，幻读等数据库兵法操作问题
  *
@@ -22,7 +25,7 @@ import java.util.Date;
  */
 
 @Component
-//@DisallowConcurrentExecution
+@DisallowConcurrentExecution
 public class MyJob implements Job {
     private static int count=1;
 
@@ -39,13 +42,21 @@ public class MyJob implements Job {
         }
 
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+": 执行任务"+count+"次");
-//        myService.test();
+        System.out.println("Job注入服务:");
         if (myService==null){
             System.out.println("myService=null");
         }else {
             myService.test();
         }
         count++;
+
+      /*  System.out.println(DateUtil.getCurrentTime()+"中断任务:20秒");
+        try{
+            Thread.sleep(20000);
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(DateUtil.getCurrentTime()+"中断结束");*/
     }
 
 

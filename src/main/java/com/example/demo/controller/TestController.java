@@ -54,10 +54,6 @@ public class TestController {
 
             scheduler.scheduleJob(jobDetail,simpleTrigger);
 
-
-
-
-
             scheduler.start();
 
         } catch (SchedulerException e) {
@@ -65,6 +61,12 @@ public class TestController {
             return "定时器创建失败";
         }
         return "定时器创建成功";
+    }
+
+    @GetMapping("/shutdown")
+    public String shutdown() throws SchedulerException {
+        scheduler.shutdown();
+        return "关闭Scheduler成功";
     }
 
 }
